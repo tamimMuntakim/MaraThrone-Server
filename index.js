@@ -32,6 +32,15 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/marathons', async (req, res) => {
+            let cursor = marathonsCollection.find();
+            if(req.query?.limit == "true"){
+                cursor = cursor.limit(6);
+            }
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
     } finally {
     }
 }
