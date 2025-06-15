@@ -23,6 +23,15 @@ async function run() {
         await client.connect();
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+        const marathonsCollection = client.db("maraThroneDB").collection("marathons");
+
+        app.post('/marathons', async (req, res) => {
+            const newMarathon = req.body;
+            const result = await marathonsCollection.insertOne(newMarathon);
+            res.send(result);
+        })
+
     } finally {
     }
 }
