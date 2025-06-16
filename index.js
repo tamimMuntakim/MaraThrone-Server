@@ -34,10 +34,19 @@ async function run() {
 
         app.get('/marathons', async (req, res) => {
             let cursor = marathonsCollection.find();
-            if(req.query?.limit == "true"){
+            if (req.query?.limit == "true") {
                 cursor = cursor.limit(6);
             }
             const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/marathons/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: new ObjectId(id),
+            };
+            const result = await marathonsCollection.findOne(query);
             res.send(result);
         })
 
