@@ -50,6 +50,16 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/my-marathons', async (req, res) => {
+            const email = req.query?.email;
+            const query = {
+                addedByUserEmail: email || "",
+            };
+            const cursor = marathonsCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
     } finally {
     }
 }
