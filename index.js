@@ -33,6 +33,12 @@ async function run() {
             res.send(result);
         })
 
+        app.post('/registrations', async (req, res) => {
+            const newMarathon = req.body;
+            const result = await registrationsCollection.insertOne(newMarathon);
+            res.send(result);
+        })
+
         app.get('/marathons', async (req, res) => {
             let cursor = marathonsCollection.find();
             if (req.query?.limit == "true") {
@@ -61,6 +67,25 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/my-registrations', async (req, res) => {
+            const email = req.query?.email;
+            const query = {
+                userEmail: email || "",
+            };
+            const cursor = registrationsCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/registrations/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: new ObjectId(id),
+            };
+            const result = await registrationsCollection.findOne(query);
+            res.send(result);
+        })
+
         app.patch('/marathons/:id', async (req, res) => {
             const id = req.params.id;
             const updatedMarathon = req.body;
@@ -78,6 +103,22 @@ async function run() {
             );
             res.send(result);
         })
+
+        app.patch("/marathons/increment/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = {
+                _id: new ObjectId(id),
+            };
+            const updatedDoc = {
+                $inc: { regCount: 1 }
+            };
+            const result = await marathonsCollection.updateOne(
+                filter,
+                updatedDoc
+            );
+            res.send(result);
+        });
+
 
         app.delete('/marathons/:id', async (req, res) => {
             const id = req.params.id;
