@@ -119,6 +119,38 @@ async function run() {
             res.send(result);
         });
 
+        app.patch("/marathons/decrement/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = {
+                _id: new ObjectId(id),
+            };
+            const updatedDoc = {
+                $inc: { regCount: -1 }
+            };
+            const result = await marathonsCollection.updateOne(
+                filter,
+                updatedDoc
+            );
+            res.send(result);
+        });
+
+        app.patch('/registrations/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedRegistration = req.body;
+            const filter = {
+                _id: new ObjectId(id)
+            };
+            const option = { upsert: true };
+            const updatedDoc = {
+                $set: updatedRegistration,
+            };
+            const result = await registrationsCollection.updateOne(
+                filter,
+                updatedDoc,
+                option
+            );
+            res.send(result);
+        })
 
         app.delete('/marathons/:id', async (req, res) => {
             const id = req.params.id;
@@ -126,6 +158,15 @@ async function run() {
                 _id: new ObjectId(id),
             };
             const result = await marathonsCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        app.delete('/registrations/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: new ObjectId(id),
+            };
+            const result = await registrationsCollection.deleteOne(query);
             res.send(result);
         })
 
