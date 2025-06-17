@@ -20,10 +20,6 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        await client.connect();
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
-
         const marathonsCollection = client.db("maraThroneDB").collection("marathons");
         const registrationsCollection = client.db("maraThroneDB").collection("registrations");
 
