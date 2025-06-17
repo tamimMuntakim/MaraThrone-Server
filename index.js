@@ -25,6 +25,7 @@ async function run() {
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
         const marathonsCollection = client.db("maraThroneDB").collection("marathons");
+        const registrationsCollection = client.db("maraThroneDB").collection("registrations");
 
         app.post('/marathons', async (req, res) => {
             const newMarathon = req.body;
@@ -57,6 +58,33 @@ async function run() {
             };
             const cursor = marathonsCollection.find(query);
             const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.patch('/marathons/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedMarathon = req.body;
+            const filter = {
+                _id: new ObjectId(id)
+            };
+            const option = { upsert: true };
+            const updatedDoc = {
+                $set: updatedMarathon,
+            };
+            const result = await marathonsCollection.updateOne(
+                filter,
+                updatedDoc,
+                option
+            );
+            res.send(result);
+        })
+
+        app.delete('/marathons/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: new ObjectId(id),
+            };
+            const result = await marathonsCollection.deleteOne(query);
             res.send(result);
         })
 
