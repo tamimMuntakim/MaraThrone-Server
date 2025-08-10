@@ -40,7 +40,7 @@ async function run() {
             if (req.query?.limit == "true") {
                 cursor = cursor.limit(6);
             }
-            const result = await cursor.toArray();
+            const result = await cursor.sort({ createdAt: 1 }).toArray();
             res.send(result);
         })
 
